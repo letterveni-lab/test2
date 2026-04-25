@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선찌(kimseonjji) 채널 성장 전략 보고서 + AI 어시스턴트</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Noto Sans KR', sans-serif; scroll-behavior: smooth; }
+.chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+@media (min-width: 768px) { .chart-container { height: 400px; } }
+.glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
+.active-tab { border-bottom: 4px solid #ea580c; color: #ea580c; font-weight: bold; }
+.inactive-tab { border-bottom: 4px solid transparent; color: #57534e; }
+.hover-scale { transition: transform 0.2s ease-in-out; }
+.hover-scale:hover { transform: translateY(-5px); }
+.loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite;}
+@keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60% { content: '...'; } 80%, 100% { content: ''; } }
+</style>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                camp: {
+                    50: '#fafaf9',
+                    100: '#f5f5f4',
+                    800: '#292524',
+                    900: '#1c1917',
+                    accent: '#ea580c',
+                    accent_light: '#fdba74',
+                    secondary: '#0d9488'
+                }
+            }
+        }
+    }
+}
+</script>
+</head>
+<body class="bg-camp-50 text-camp-800 antialiased">
+
+<!-- Chosen Palette: Warm Earth Tones with Campfire Orange -->
+<!-- Application Structure Plan: Integrated a new "✨ AI Strategy Assistant" section that allows users to leverage Gemini to generate growth strategies. Used the report's existing context (Solo Female Camping, Reality Focus) as a system prompt to ensure AI outputs are highly relevant. -->
+<!-- Visualization & Content Choices: Added an interactive AI playground with loading states and retry logic. Maintained Chart.js for competitor data. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="fixed top-0 w-full z-50 glass-panel shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex-shrink-0 flex items-center font-black text-xl text-camp-accent">
+                ⛺ SEONJJI REPORT
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm">
+                <a href="#market" class="hover:text-camp-accent transition">시장 분석</a>
+                <a href="#competitor" class="hover:text-camp-accent transition">경쟁자 분석</a>
+                <a href="#strategy" class="hover:text-camp-accent transition">SWOT & STP</a>
+                <a href="#ai-assistant" class="text-camp-accent font-bold">✨ AI 어시스턴트</a>
+                <a href="#action" class="hover:text-camp-accent transition">액션 플랜</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="pt-32 pb-16 bg-gradient-to-b from-stone-200 to-camp-50 text-center px-4">
+    <h1 class="text-4xl md:text-5xl font-black mb-4 text-camp-900">유튜브 채널 성장 전략 보고서</h1>
+    <h2 class="text-2xl md:text-3xl font-bold text-camp-accent mb-6">@kimseonjji (선찌)</h2>
+    <p class="max-w-2xl mx-auto text-lg text-stone-600 leading-relaxed bg-white/50 p-6 rounded-2xl shadow-sm border border-stone-200">
+        데이터 기반 분석과 <strong>✨ Gemini AI</strong>를 결합한 스마트 성장 솔루션입니다.
+    </p>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+    <!-- AI Assistant Section (New Feature) -->
+    <section id="ai-assistant" class="scroll-mt-24">
+        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border-2 border-camp-accent_light relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-camp-accent/5 rounded-full -mr-16 -mt-16"></div>
+            
+            <div class="relative z-10">
+                <div class="inline-block px-4 py-1 rounded-full bg-camp-accent/10 text-camp-accent font-bold text-sm mb-4">
+                    POWERED BY GEMINI 2.5 FLASH
+                </div>
+                <h3 class="text-3xl font-black text-camp-900 mb-4">✨ AI 전략 어시스턴트</h3>
+                <p class="text-stone-600 mb-8 max-w-2xl">
+                    선찌 채널의 <strong>'리얼리티 솔로 캠핑'</strong> 정체성을 바탕으로 AI가 새로운 전략을 제안합니다. 주제나 고민을 입력하고 아래 버튼을 클릭해보세요.
+                </p>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-stone-500 mb-2">어떤 제안이 필요하신가요?</label>
+                        <textarea id="ai-input" class="w-full p-4 bg-stone-50 border-2 border-stone-200 rounded-2xl focus:border-camp-accent focus:outline-none transition min-h-[120px]" placeholder="예: 여름철 우중 캠핑을 주제로 한 새로운 시리즈 아이디어를 제안해줘."></textarea>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="generateAiContent('idea')" class="px-6 py-3 bg-camp-accent text-white font-bold rounded-xl hover:bg-orange-600 transition flex items-center">
+                            <span>✨ 콘텐츠 아이디어 생성</span>
+                        </button>
+                        <button onclick="generateAiContent('seo')" class="px-6 py-3 bg-camp-900 text-white font-bold rounded-xl hover:bg-black transition flex items-center">
+                            <span>✨ 제목 & 썸네일 제안</span>
+                        </button>
+                    </div>
+
+                    <div id="ai-response-container" class="hidden mt-8 p-6 bg-stone-50 rounded-2xl border border-stone-200">
+                        <div id="ai-loading" class="hidden py-10 text-center">
+                            <div class="text-camp-accent font-bold text-lg loading-dots">AI가 전략을 분석 중입니다</div>
+                        </div>
+                        <div id="ai-result" class="prose max-w-none text-stone-800 leading-relaxed">
+                            <!-- AI Result will be injected here -->
+                        </div>
+                        <div id="ai-error" class="hidden p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+                            에러가 발생했습니다. 잠시 후 다시 시도해주세요.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Analysis -->
+    <section id="market" class="scroll-mt-24">
+        <div class="mb-10 text-center">
+            <h3 class="text-3xl font-extrabold text-camp-900 mb-4">시장 환경 및 시청자 분석</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-100 hover-scale">
+                <div class="text-4xl mb-4">🔥</div>
+                <h4 class="text-xl font-bold mb-3">시장 트렌드: '리얼'의 시대</h4>
+                <p class="text-stone-600 mb-4">과거의 화려함보다 현재는 생존과 리얼리티가 핵심입니다.</p>
+                <ul class="space-y-2 text-sm text-stone-700">
+                    <li class="flex items-center">✅ 우중/동계 등 극한 상황의 높은 수요</li>
+                    <li class="flex items-center">✅ 여성 솔로 캠퍼의 대리 만족 가치</li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-stone-100 hover-scale">
+                <div class="text-4xl mb-4">👀</div>
+                <h4 class="text-xl font-bold mb-3">시청 유지 포인트</h4>
+                <p class="text-stone-600 mb-4">시청자가 이탈하지 않는 결정적인 이유를 분석합니다.</p>
+                <ul class="space-y-2 text-sm text-stone-700">
+                    <li class="flex items-center">✅ 예상치 못한 돌발 상황의 해결 과정</li>
+                    <li class="flex items-center">✅ 옆집 언니 같은 솔직한 입담</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitor Chart -->
+    <section id="competitor" class="scroll-mt-24">
+        <div class="mb-10 text-center">
+            <h3 class="text-3xl font-extrabold text-camp-900 mb-4">경쟁자 분석</h3>
+        </div>
+        <div class="bg-white p-8 rounded-3xl shadow-lg border border-stone-200">
+            <div class="chart-container">
+                <canvas id="competitorChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- SWOT & STP -->
+    <section id="strategy" class="scroll-mt-24">
+        <div class="mb-10 text-center">
+            <h3 class="text-3xl font-extrabold text-camp-900 mb-4">전략 분석 (SWOT & STP)</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto mb-16">
+            <div class="p-6 bg-orange-50 rounded-2xl border border-orange-200">
+                <h5 class="font-black text-orange-600 mb-2 uppercase">Strengths</h5>
+                <p class="text-sm">진정성 있는 캐릭터, 탄탄한 팬덤, 고난도 캠핑 수행 능력</p>
+            </div>
+            <div class="p-6 bg-stone-100 rounded-2xl border border-stone-200">
+                <h5 class="font-black text-stone-500 mb-2 uppercase">Weaknesses</h5>
+                <p class="text-sm">검색 최적화 부족, 콘텐츠 루틴의 정형화</p>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-md border border-stone-200 overflow-hidden">
+            <div class="bg-stone-50 border-b border-stone-200 flex">
+                <button onclick="switchTab('tar')" id="tab-tar" class="flex-1 py-4 text-center active-tab">타겟팅</button>
+                <button onclick="switchTab('pos')" id="tab-pos" class="flex-1 py-4 text-center inactive-tab">포지셔닝</button>
+            </div>
+            <div class="p-8">
+                <div id="content-tar" class="block">
+                    <p class="text-xl font-black text-center text-stone-800">"혼자만의 시간을 꿈꾸는 2040 여성"</p>
+                </div>
+                <div id="content-pos" class="hidden text-center">
+                    <p class="text-xl font-black text-stone-800">"가장 솔직하고 용감한 친구 같은 솔로 캠퍼"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Plan -->
+    <section id="action" class="scroll-mt-24 mb-24">
+        <div class="mb-10 text-center">
+            <h3 class="text-3xl font-extrabold text-camp-900 mb-4">실행 과제 (Action Plan)</h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-6 bg-white rounded-xl border border-stone-200 flex items-center">
+                <span class="text-camp-accent font-bold mr-4">01</span>
+                <span>숏폼(Shorts) 정보성 기획물 제작</span>
+            </div>
+            <div class="p-6 bg-white rounded-xl border border-stone-200 flex items-center">
+                <span class="text-camp-accent font-bold mr-4">02</span>
+                <span>SEO 고도화 (키워드 전략 재정비)</span>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-camp-900 text-stone-500 py-12 text-center text-sm">
+    <p>© 2026 선찌 채널 성장 전략 보고서 | AI Assistant Enabled</p>
+</footer>
+
+<script>
+    const apiKey = ""; // Runtime provides the key
+
+    // Helper for Exponential Backoff API calls
+    async function callGemini(prompt, retries = 5, delay = 1000) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            systemInstruction: {
+                parts: [{
+                    text: `당신은 유튜브 성장 전략 전문가입니다. 분석 대상은 '선찌(kimseonjji)'라는 여성 솔로 캠핑 채널입니다. 
+                    채널 컨셉: 리얼리티, 가식 없는 모습, 옆집 언니 같은 친근함, 우중/동계 등 터프한 캠핑.
+                    타겟: 2040 여성.
+                    모든 답변은 한국어로 하며, 전문적이고 실행 가능한 구체적인 제안을 담아야 합니다. 마크다운 형식을 사용하여 가독성 있게 작성하세요.`
+                }]
+            }
+        };
+
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('API Error');
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text;
+            } catch (err) {
+                if (i === retries - 1) throw err;
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+        }
+    }
+
+    async function generateAiContent(type) {
+        const input = document.getElementById('ai-input').value;
+        const container = document.getElementById('ai-response-container');
+        const loading = document.getElementById('ai-loading');
+        const result = document.getElementById('ai-result');
+        const error = document.getElementById('ai-error');
+
+        if (!input.trim()) {
+            alert('주제나 질문을 입력해주세요!');
+            return;
+        }
+
+        container.classList.remove('hidden');
+        loading.classList.remove('hidden');
+        result.innerHTML = '';
+        error.classList.add('hidden');
+
+        let prompt = "";
+        if (type === 'idea') {
+            prompt = `사용자의 입력: "${input}". 
+            이 입력을 바탕으로 선찌 채널의 '리얼리티'와 '친근함'을 극대화할 수 있는 새로운 콘텐츠 시리즈 아이디어 3가지를 제안해줘. 각 아이디어별로 기획 의도와 예상 시청 반응도 포함해줘.`;
+        } else {
+            prompt = `사용자의 입력: "${input}". 
+            이 입력을 바탕으로 조회수(CTR)를 높일 수 있는 유튜브 제목 5가지와 썸네일 구성을 위한 시각적 요소(자막 문구, 배치)를 구체적으로 제안해줘.`;
+        }
+
+        try {
+            const text = await callGemini(prompt);
+            loading.classList.add('hidden');
+            
+            // Simple markdown-to-html (replacement)
+            const formattedText = text
+                .replace(/^### (.*$)/gim, '<h4 class="text-xl font-bold mt-6 mb-2">$1</h4>')
+                .replace(/^## (.*$)/gim, '<h3 class="text-2xl font-bold mt-8 mb-4">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/^\- (.*$)/gim, '<li class="ml-4 mb-1">$1</li>')
+                .replace(/\n/g, '<br>');
+            
+            result.innerHTML = formattedText;
+        } catch (err) {
+            loading.classList.add('hidden');
+            error.classList.remove('hidden');
+        }
+    }
+
+    // Chart.js implementation
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('competitorChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['짜루캠핑', '선찌 (목표)', '산타네', '유팡이', '쇼츠하우스'],
+                datasets: [{
+                    label: '채널 지수 (상대값)',
+                    data: [100, 45, 35, 30, 25],
+                    backgroundColor: ['#ea580c', '#fdba74', '#0d9488', '#292524', '#78716c'],
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { display: false }, x: { grid: { display: false } } }
+            }
+        });
+    });
+
+    function switchTab(tabId) {
+        const tabs = ['tar', 'pos'];
+        tabs.forEach(id => {
+            document.getElementById('tab-' + id).className = id === tabId ? 'flex-1 py-4 text-center active-tab' : 'flex-1 py-4 text-center inactive-tab';
+            document.getElementById('content-' + id).className = id === tabId ? 'block animate-fade-in' : 'hidden';
+        });
+    }
+</script>
+</body>
+</html>
